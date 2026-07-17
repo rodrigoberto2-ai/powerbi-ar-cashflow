@@ -1,15 +1,15 @@
 # Medidas DAX
 
-Cria uma tabela só de medidas (`Medidas`, sem dados — `Modelação → Nova Tabela` →
-`Medidas = {""}` e apaga a coluna) para organizar tudo. Cola cada medida abaixo em
-`Nova Medida`.
+Crea una tabla solo de medidas (`Medidas`, sin datos — `Modelado → Nueva tabla` →
+`Medidas = {""}` y borra la columna) para organizarlo todo. Pega cada medida de
+abajo en `Nueva medida`.
 
-> Nota: as medidas que usam `TODAY()` são dinâmicas — mudam consoante a data em
-> que abres o relatório. Como o dataset é sintético e "termina" perto de
-> 2026-07-16, se abrires isto muito mais tarde os números de "vencido"/"em
-> aberto" vão parecer estranhos (tudo no passado). Isso é esperado num dataset
-> de portfólio; explica isso na entrevista se perguntarem — mostra que percebes
-> a limitação de dados estáticos vs. um sistema em produção.
+> Nota: las medidas que usan `TODAY()` son dinámicas — cambian según la fecha
+> en la que abras el informe. Como el dataset es sintético y "termina" cerca
+> de 2026-07-16, si lo abres mucho más tarde los números de "vencido"/"pendiente"
+> pueden parecer extraños (todo en el pasado). Eso es normal en un dataset
+> de portfolio; explícalo en la entrevista si te preguntan — demuestra que
+> entiendes la limitación de datos estáticos frente a un sistema en producción.
 
 ## 1. Medidas base
 
@@ -25,9 +25,9 @@ CALCULATE(
     NOT ISBLANK(FactInvoices[payment_date])
 )
 ```
-Usa a relação inativa `DimDate[date] ↔ FactInvoices[payment_date]` — assim, num
-gráfico por mês (eixo = `DimDate[year_month]`), esta medida soma o que foi
-**efetivamente cobrado naquele mês**, mesmo com a relação ativa a apontar para
+Usa la relación inactiva `DimDate[date] ↔ FactInvoices[payment_date]` — así, en
+un gráfico por mes (eje = `DimDate[year_month]`), esta medida suma lo que se
+**cobró efectivamente ese mes**, aunque la relación activa apunte a
 `issue_date`.
 
 ```dax
@@ -54,9 +54,9 @@ DIVIDE([Total Vencido], [Total em Aberto])
 
 ## 2. DSO (Days Sales Outstanding)
 
-DSO "como se fosse hoje" é fácil (`Total em Aberto` já reflete "hoje"). O
-desafio é um **DSO ao longo do tempo** (tendência mensal) — para isso precisas
-de medidas "a partir de uma data de referência", não só "a partir de hoje":
+El DSO "a día de hoy" es fácil (`Total em Aberto` ya refleja "hoy"). El reto es
+un **DSO a lo largo del tiempo** (tendencia mensual) — para eso necesitas
+medidas "a partir de una fecha de referencia", no solo "a partir de hoy":
 
 ```dax
 AR Aberto até Data =
@@ -91,14 +91,21 @@ DSO =
 DIVIDE([AR Aberto até Data], [Faturado Últimos 90 Dias]) * 90
 ```
 
-Usa `DSO` num gráfico de linhas com `DimDate[year_month]` no eixo — o
-`MAX(DimDate[date])` dentro da variável resolve automaticamente para o último
-dia de cada mês nesse contexto.
+Usa `DSO` en un gráfico de líneas con `DimDate[year_month]` en el eje — el
+`MAX(DimDate[date])` dentro de la variable se resuelve automáticamente al
+último día de cada mes en ese contexto.
 
-## 3. Aging (faixas de atraso)
+Para un valor puntual "a día de hoy" (por ejemplo en una tarjeta, sin eje de
+fecha), usa esta variante:
 
-Primeiro cria uma **coluna calculada** em `FactInvoices` (não uma medida — isto
-é por linha):
+```dax
+DSO Atual = CALCULATE([DSO], DimDate[date] = TODAY())
+```
+
+## 3. Aging (tramos de retraso)
+
+Primero crea una **columna calculada** en `FactInvoices` (no una medida, esto
+es por fila):
 
 ```dax
 Aging Bucket =
@@ -112,26 +119,26 @@ IF(
 )
 ```
 
-Depois, no visual de aging, arrasta `Aging Bucket` para o eixo, `Total em
-Aberto` para os valores, e aplica um **filtro de visual**: `Aging Bucket ≠
+Después, en el visual de aging, arrastra `Aging Bucket` al eje, `Total em
+Aberto` a los valores, y aplica un **filtro de visual**: `Aging Bucket ≠
 "Paga"`.
 
-Ordena o eixo manualmente (`Ordenar por coluna` não serve para texto livre) —
-cria uma coluna auxiliar `Aging Bucket Ordem` (1=Em dia, 2=1-30, 3=31-60,
-4=60+) e usa `Ordenar por coluna` → `Aging Bucket Ordem`.
+Ordena el eje manualmente (`Ordenar por columna` no sirve con texto libre) —
+crea una columna auxiliar `Aging Bucket Ordem` (1=Em dia, 2=1-30, 3=31-60,
+4=60+) usando una lógica independiente (sin referenciar `Aging Bucket`, para
+evitar dependencia circular) y usa `Ordenar por columna` → `Aging Bucket
+Ordem`.
 
 ## 4. Segmento / País
 
-```dax
-Faturado por Segmento = [Total Faturado]   -- usa com DimClients[segment] no eixo
-```
-Não precisas de medida nova — `Total Faturado` e `% Vencido` já respondem
-corretamente quando cruzadas com `DimClients[segment]` ou `DimClients[country]`
-no eixo, porque a relação `DimClients → FactInvoices` propaga o filtro.
+No necesitas ninguna medida nueva — `Total Faturado` y `% Vencido` ya
+responden correctamente al cruzarlas con `DimClients[segment]` o
+`DimClients[country]` en el eje, porque la relación `DimClients →
+FactInvoices` propaga el filtro.
 
-## 5. Formatação
+## 5. Formato
 
-- Todas as medidas de valor: formato `€ #.##0` (moeda, 0 casas decimais).
-- `% Vencido`: formato percentagem, 1 casa decimal.
-- `DSO`: número, 1 casa decimal, sufixo " dias" (formato personalizado
-  `0.0" dias"`).
+- Todas las medidas de importe: formato `€ #.##0` (moneda, 0 decimales).
+- `% Vencido`: formato porcentaje, 1 decimal.
+- `DSO`: número, 1 decimal, sufijo " días" (formato personalizado
+  `0.0" días"`).

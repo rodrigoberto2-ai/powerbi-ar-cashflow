@@ -1,48 +1,48 @@
-# Análise de Contas a Receber & Cash Flow — Power BI
+# Análisis de Cuentas por Cobrar & Cash Flow — Power BI
 
-Projeto de portfólio: dashboard em Power BI para gestão de contas a receber (AR),
-DSO e risco de incumprimento, para uma operação B2B fictícia com clientes em
-Espanha, Portugal, França, Alemanha e Itália.
+Proyecto de portfolio: dashboard en Power BI para gestión de cuentas por cobrar
+(AR), DSO y riesgo de impago, para una operación B2B ficticia con clientes en
+España, Portugal, Francia, Alemania e Italia.
 
-Este projeto espelha o trabalho real de acompanhamento financeiro feito na
-UNINTER (negociação de prazos de pagamento, controlo de risco de impago,
-seguimento de KPIs mensais) — aqui aplicado com Power BI + DAX de forma mais
-avançada do que dashboards operacionais típicos.
+Este proyecto refleja el trabajo real de seguimiento financiero realizado en
+UNINTER (negociación de plazos de pago, control de riesgo de impago,
+seguimiento de KPIs mensuales), aquí aplicado con Power BI + DAX de forma más
+avanzada que los dashboards operativos típicos.
 
-> Este pacote foi preparado para seres tu a montar os visuais no Power BI
-> Desktop — segue `GUIA_PASSO_A_PASSO.md`. O dataset e o modelo já estão prontos,
-> só falta a montagem visual (~30-40 min).
+> Este paquete está preparado para que montes tú los visuales en Power BI
+> Desktop — sigue `GUIA_PASO_A_PASO.md`. El dataset y el modelo ya están listos,
+> solo falta el montaje visual (~30-40 min).
 
-## Perguntas de negócio que o relatório responde
+## Preguntas de negocio que responde el informe
 
-1. O DSO está a subir ou a descer? Em que segmento/país?
-2. Que percentagem do valor em aberto está vencida, e há quanto tempo?
-3. Que clientes concentram o maior risco de incumprimento?
-4. A cobrança está a acompanhar a faturação mês a mês?
+1. ¿El DSO está subiendo o bajando? ¿En qué segmento/país?
+2. ¿Qué porcentaje del valor pendiente está vencido, y desde cuándo?
+3. ¿Qué clientes concentran el mayor riesgo de impago?
+4. ¿El cobro está siguiendo el ritmo de la facturación mes a mes?
 
-## Ficheiros
+## Archivos
 
 ```
 data/
-  clients.csv      → dimensão de clientes (segmento, país, prazo de pagamento)
-  invoices.csv      → factos: faturas emitidas, vencimento, pagamento, valor
-  dim_date.csv       → dimensão de datas (para o modelo em estrela)
-MODELO_DE_DADOS.md   → esquema em estrela + relações
-MEDIDAS_DAX.md        → todas as fórmulas DAX usadas nos visuais
-GUIA_PASSO_A_PASSO.md → como montar o relatório no Power BI Desktop
+  clients.csv        → dimensión de clientes (segmento, país, plazo de pago)
+  invoices.csv        → hechos: facturas emitidas, vencimiento, pago, importe
+  dim_date.csv         → dimensión de fechas (para el modelo en estrella)
+MODELO_DE_DATOS.md      → esquema en estrella + relaciones
+MEDIDAS_DAX.md            → todas las fórmulas DAX usadas en los visuales
+GUIA_PASO_A_PASO.md       → cómo montar el informe en Power BI Desktop
 ```
 
-## Depois de montado
+## Después de montarlo
 
-1. Exporta 2-3 screenshots dos visuais principais para este README (secção
-   "Screenshots").
-2. Publica no Power BI Service (se tiveres licença) ou exporta um PDF/vídeo
-   curto a navegar pelo relatório — o link vai aqui e no teu portfólio.
+1. Exporta 2-3 capturas de los visuales principales para este README (sección
+   "Capturas").
+2. Publica en Power BI Service (si tienes licencia) o exporta un PDF/vídeo
+   corto navegando por el informe — el enlace va aquí y en tu portfolio.
 
-## Screenshots
+## Capturas
 
-_(adicionar depois de montado no Power BI Desktop)_
+_(añadir después de montarlo en Power BI Desktop)_
 
 ---
 
-Feito por Rodrigo Pinheiro Berto — Analista de Datos, Madrid.
+Hecho por Rodrigo Pinheiro Berto — Analista de Datos, Madrid.
